@@ -1,0 +1,36 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "computer",
+      "price": 4300,
+      "quantity": 300,
+      "selected": true,
+      "availale": true
+    },
+    {
+      "id": 2,
+      "name": "laptopThinkpad",
+      "price": 200,
+      "quantity": 11300,
+      "selected": true,
+      "availale": true
+    },
+    {
+      "id": 3,
+      "name": "printer",
+      "price": 1300,
+      "quantity": 300,
+      "selected": true,
+      "availale": true
+    },
+    {
+      "id": 4,
+      "name": "computer3",
+      "price": 30,
+      "quantity": 300,
+      "selected": true,
+      "availale": true
+    }
+  ]
+}
