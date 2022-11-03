@@ -1,8 +1,11 @@
-import { CommonModule, NgFor, NgForOf, NgIf } from '@angular/common';  
+import {  NgFor, NgForOf, NgIf, NgSwitch, NgSwitchCase } from '@angular/common';  
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { Component, OnInit } from '@angular/core';
 import { Product } from 'src/app/model/product.model';
 import { ProductsService } from 'src/app/services/products.service';
+import { catchError, map, Observable, of, startWith } from 'rxjs';
+import { AppDataState, DataStateEnum } from 'src/app/state/product.state';
 
 @Component({
   selector: 'app-products',
@@ -13,15 +16,19 @@ import { ProductsService } from 'src/app/services/products.service';
 
 })
 export class ProductsComponent implements OnInit {
-  products : Product[] | null=null;
+  products$ : Observable <AppDataState<Product[]>> | null=null;
+  readonly DataStateEnum = DataStateEnum;
+
   constructor(private productService:ProductsService) { }
 
   ngOnInit(): void {
   }
 
   onGetAllProducts(){
-    this.productService.getAllProducts().subscribe(data =>{
-      this.products = data;
-    })
+    this.products$ = this.productService.getAllProducts().pipe(
+      map(data => ({ dataState: DataStateEnum.LOADED,data: data})),
+      startWith({ dataState : DataStateEnum.LOADING }),
+      catchError(err => of ({ dataState : DataStateEnum.ERROR, errorMessage:err.message}))
+    );
   }
 }

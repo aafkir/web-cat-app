@@ -1,34 +1,48 @@
 <nav class="navbar navbar-expand-sm bg-light navbar-light">
   <ul class="navbar navbar-nav">
     <li>
-      <button (click)="onGetAllProducts()" class="btn btn-outline-info ml-2">
+      <button (click)="onGetAllProducts()" class="btn btn-outline-info ms-4">
         All
       </button>
     </li>
     <li>
-      <button class="btn btn-outline-info ml-2">Selected</button>
+      <button class="btn btn-outline-info ms-4">Selected</button>
     </li>
     <li>
-      <button class="btn btn-outline-info ml-2">Available</button>
+      <button class="btn btn-outline-info ms-4">Available</button>
     </li>
   </ul>
 </nav>
-
-<div class="container" *ngIf="products">
-  <table class="table">
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Price</th>
-      <th>Quantity</th>
-      <th>Selected</th>
-      <th>Available</th>
-    </tr>
-    <tr *ngFor="let p of products">
-      <td>{{ p.id }}</td>
-      <td>{{ p.name }}</td>
-      <td>{{ p.price }}</td>
-      <td>{{ p.available }}</td>
-    </tr>
-  </table>
-</div>
+<ng-container *ngIf="products$ | async as result" [ngSwitch]="result.dataState">
+  <ng-template *ngSwitchCase="DataStateEnum.LOADING"> Loading ... </ng-template>
+  <ng-template *ngSwitchCase="DataStateEnum.ERROR">
+    <div class="alert-danger">
+      {{ result.errorMessage }}
+    </div>
+  </ng-template>
+  <ng-template *ngSwitchCase="DataStateEnum.LOADED">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Selected</th>
+          <th>Available</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of result.data | async">
+          <td>{{ p.id }}</td>
+          <td>{{ p.name }}</td>
+          <td>{{ p.price }}</td>
+          <td>{{ p.quantity }}</td>
+          <td>{{ p.selected }}</td>
+          <td>{{ p.available }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-template>
+</ng-container>
+<div class="container" *ngIf="products$"></div>
